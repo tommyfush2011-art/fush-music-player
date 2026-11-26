@@ -1,0 +1,27 @@
+name: Build FushMusic ES3C28P
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Compile firmware
+        working-directory: FushMusic_ES3C28P_GitHub
+        run: pio run
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: FushMusic-ES3C28P
+          path: FushMusic_ES3C28P_GitHub/.pio/build/es3c28p/*.bin
+          if-no-files-found: error
