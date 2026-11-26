@@ -1,27 +1,21 @@
-name: Build FushMusic ES3C28P
+[env:es3c28p]
+platform = espressif32@6.10.0
+board = esp32-s3-devkitc-1
+framework = arduino
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [main]
+board_build.flash_mode = dio
+board_upload.flash_size = 16MB
+board_build.partitions = default_16MB.csv
+board_build.arduino.memory_type = qio_opi
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+monitor_speed = 115200
 
-    steps:
-      - uses: actions/checkout@v4
+build_flags =
+    -DBOARD_HAS_PSRAM
+    -DARDUINO_USB_MODE=1
+    -DARDUINO_USB_CDC_ON_BOOT=1
 
-      - name: Install PlatformIO
-        run: pip install platformio
-
-      - name: Compile firmware
-        working-directory: FushMusic_ES3C28P_GitHub
-        run: pio run
-
-      - name: Upload firmware
-        uses: actions/upload-artifact@v4
-        with:
-          name: FushMusic-ES3C28P
-          path: FushMusic_ES3C28P_GitHub/.pio/build/es3c28p/*.bin
-          if-no-files-found: error
+lib_deps =
+    adafruit/Adafruit GFX Library
+    adafruit/Adafruit ILI9341
+    https://github.com/earlephilhower/ESP8266Audio.git#1.9.9
